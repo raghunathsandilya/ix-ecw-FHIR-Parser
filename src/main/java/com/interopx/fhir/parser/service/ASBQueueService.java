@@ -19,6 +19,7 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -31,13 +32,22 @@ import com.azure.messaging.servicebus.ServiceBusProcessorClient;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessage;
 import com.azure.messaging.servicebus.ServiceBusReceivedMessageContext;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import com.ecw.producer.ASBProducer;
+import com.ecw.utils.encryption.Compression;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.interopx.fhir.parser.model.AllergyIntolerance;
+import com.interopx.fhir.parser.model.Encounter;
 import com.interopx.fhir.parser.model.Patient;
 import com.interopx.fhir.parser.model.PatientDemographics;
 import com.interopx.fhir.parser.processing.AllergyIntoleranceProcessor;
+import com.interopx.fhir.parser.processing.EncounterProcessor;
 import com.interopx.fhir.parser.processing.PatientDemographicsProcessor;
+import com.interopx.fhir.parser.util.AES256;
+import com.interopx.fhir.parser.util.ParserUtil;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 
 @Service
 public class ASBQueueService {
@@ -46,18 +56,27 @@ public class ASBQueueService {
 
 	@Autowired
 	Environment environment;
-	
+
 	@Autowired
 	FhirContext fhirContext;
-	
+
+	@Autowired
+	IParser fhirParser;
+
 	@Autowired
 	PatientDemographicsProcessor patientDemographicsProcessor;
-	
+
 	@Autowired
 	AllergyIntoleranceProcessor allergyProcessor;
 
+	@Autowired
+	ParserUtil parserUtil;
+
+	@Value("${sample.input}")
+	private String sampleInput;
+
 	public String loadFile() throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader("D:\\InteropXWorkSpace-ecw\\Sample-Input.json"));
+		BufferedReader reader = new BufferedReader(new FileReader(sampleInput));
 		StringBuilder stringBuilder = new StringBuilder();
 		String line = null;
 		String ls = System.getProperty("line.separator");
@@ -77,20 +96,16 @@ public class ASBQueueService {
 		String response = null;
 		try {
 			String payloadContent = loadFile();
-			logger.info("Using Env Variable Connection String:::::{}",environment.getProperty("connectionString"));
-			logger.info("Using Env Variable Queue Name:::::{}",environment.getProperty("queueName"));
-			
-		    ServiceBusSenderClient senderClient = new ServiceBusClientBuilder()
-		            .connectionString(environment.getProperty("connectionString"))
-		            .sender()
-		            .queueName(environment.getProperty("queueName"))
-		            .buildClient();
+			logger.info("Using Env Variable Connection String:::::{}", environment.getProperty("connectionString"));
+			logger.info("Using Env Variable Queue Name:::::{}", environment.getProperty("queueName"));
 
-		    senderClient.sendMessage(new ServiceBusMessage(payloadContent));
-		}  catch (IOException e) {
+			response = ASBProducer.sendMsg(payloadContent, environment.getProperty("queueName"),
+					environment.getProperty("connectionString"));
+
+		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return response;
 	}
 
 	public String receiveMessages() {
@@ -115,7 +130,8 @@ public class ASBQueueService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		processorClient.close();
+
 		return "Success";
 	}
 
@@ -123,8 +139,10 @@ public class ASBQueueService {
 			throws UnsupportedEncodingException, IOException {
 		ServiceBusReceivedMessage message = context.getMessage();
 		logger.info("Processing message:::::{}", message.getBody());
-		String response = message.getBody().toString();
-		processReceivedMessage(response);
+		String response = com.ecw.utils.encryption.AES256.decrypt(message.getBody().toString());
+		String decompressedString = Compression.gZipDecompression(response);
+		logger.info(decompressedString);
+		processReceivedMessage(decompressedString);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
 		LocalDateTime now = LocalDateTime.now();
 		logger.info("message processed at: " + now);
@@ -132,46 +150,53 @@ public class ASBQueueService {
 	}
 
 	private String processReceivedMessage(String receivedMessage) {
-		logger.info("Received Message:::::{}",receivedMessage);
-		Bundle bundle = (Bundle) fhirContext.newJsonParser().parseResource(receivedMessage);
-		logger.info("receivedId:::::{}",bundle.getIdElement().getIdPart());
-		
-		Patient patientObj = new Patient();
-		PatientDemographics patientdemographics=null;
-		ArrayList<AllergyIntolerance> allergies = null;
-		if(!bundle.getEntry().isEmpty()) {
-			for(BundleEntryComponent entryComp: bundle.getEntry()) {
-				if(entryComp.hasResource()) {
-					Resource resource = entryComp.getResource();
-					if(resource.getResourceType().name().equals(ResourceType.Patient.toString())) {
-						patientdemographics = patientDemographicsProcessor.retrievePatientDemographics(resource);
-					}
-					if(resource.getResourceType().name().equals(ResourceType.AllergyIntolerance.toString())) {
-						org.hl7.fhir.r4.model.AllergyIntolerance allergy = null;
-					}
-					if(resource.getResourceType().name().equals(ResourceType.Encounter.toString())) {
-						
-					}
-					if(resource.getResourceType().name().equals(ResourceType.MedicationRequest.toString())) {
-						
-					}
-					if(resource.getResourceType().name().equals(ResourceType.Condition.toString())) {
-						
+		logger.info("Received Message:::::{}", receivedMessage);
+		try {
+			Bundle bundle = (Bundle) fhirParser.parseResource(receivedMessage);
+			logger.info("receivedId:::::{}", bundle.getIdElement().getIdPart());
+
+			Patient patientObj = new Patient();
+			PatientDemographics patientdemographics = null;
+			ArrayList<AllergyIntolerance> allergies = new ArrayList<AllergyIntolerance>();
+			if (!bundle.getEntry().isEmpty()) {
+				for (BundleEntryComponent entryComp : bundle.getEntry()) {
+					if (entryComp.hasResource()) {
+						Resource resource = entryComp.getResource();
+						if (resource.getResourceType().name().equals(ResourceType.Patient.toString())) {
+							patientdemographics = patientDemographicsProcessor.retrievePatientDemographics(resource);
+						}
+						if (resource.getResourceType().name().equals(ResourceType.AllergyIntolerance.toString())) {
+							AllergyIntolerance allergy = allergyProcessor.retrieveAllergyIntolerance(resource);
+							allergies.add(allergy);
+						}
+						if (resource.getResourceType().name().equals(ResourceType.Encounter.toString())) {
+						}
+						if (resource.getResourceType().name().equals(ResourceType.MedicationRequest.toString())) {
+
+						}
+						if (resource.getResourceType().name().equals(ResourceType.Condition.toString())) {
+
+						}
 					}
 				}
 			}
-		}
-		
-		if(patientdemographics!=null) {
-			patientObj.setPatientDemographics(patientdemographics);
-		}
-		
-		
-		
-		
-		try {
-			
-		}catch(Exception e) {
+
+			if (patientdemographics != null) {
+				patientObj.setPatientDemographics(patientdemographics);
+			}
+			if (allergies != null) {
+				patientObj.setAllergyIntolerance(allergies);
+			}
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				String json = mapper.writeValueAsString(patientObj);
+				logger.info("CCDARefModelData:::::" + json);
+				parserUtil.saveDataToFile(json, "D:\\InteropXWorkSpace-ecw\\Sample-Ouput.json");
+			} catch (JsonProcessingException e) {
+				logger.error("Error in Converting Object to String");
+			}
+
+		} catch (Exception e) {
 			logger.info("Error in Processing the FHIR Object");
 		}
 		return new String();

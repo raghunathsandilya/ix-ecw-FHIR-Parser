@@ -45,7 +45,7 @@ public class AES256 {
 	         return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
 	      } catch (Exception var8) {
 	         System.out.println("Error while decrypting: " + var8.toString());
-	         return null;
+	         return "Error while decrypting: " + var8.toString();
 	      }
 	   }
 	}

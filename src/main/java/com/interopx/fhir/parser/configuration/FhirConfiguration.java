@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.RestfulServer;
 import ca.uhn.fhir.rest.server.interceptor.LoggingInterceptor;
@@ -30,6 +31,11 @@ public class FhirConfiguration implements IResourceProvider, FhirRestfulServerCu
     public FhirContext getFhirContext() {
         return FhirContext.forR4();
     }
+	
+	@Bean
+	public IParser getParser() {
+		return getFhirContext().newJsonParser().setPrettyPrint(true);
+	}
 
 	@Override
 	public void customize(RestfulServer server) {

@@ -9,13 +9,13 @@ public class PatientDemographics {
 	private String patientId;
 	private ArrayList<NameElement> patientNames;
 	private ArrayList<IdentifierElement> identifiers;
-	private String dob;
+	private Date dob;
 	private Date dateOfDeath;
 	private ArrayList<Address> addresses;
-	private ArrayList<PatientLanguage> languageCommunication;
+	private ArrayList<CodeElement> languageCommunication;
 	private CodeElement raceCode;
 	private CodeElement ethnicity;
-	private CodeElement gender;
+	private String gender;
 	private CodeElement maritalStatus;
 	private CodeElement religiousAffiliationCode;
 	
@@ -37,10 +37,10 @@ public class PatientDemographics {
 	public void setIdentifiers(ArrayList<IdentifierElement> identifiers) {
 		this.identifiers = identifiers;
 	}
-	public String getDob() {
+	public Date getDob() {
 		return dob;
 	}
-	public void setDob(String dob) {
+	public void setDob(Date dob) {
 		this.dob = dob;
 	}
 	public Date getDateOfDeath() {
@@ -55,10 +55,10 @@ public class PatientDemographics {
 	public void setAddresses(ArrayList<Address> addresses) {
 		this.addresses = addresses;
 	}
-	public ArrayList<PatientLanguage> getLanguageCommunication() {
+	public ArrayList<CodeElement> getLanguageCommunication() {
 		return languageCommunication;
 	}
-	public void setLanguageCommunication(ArrayList<PatientLanguage> languageCommunication) {
+	public void setLanguageCommunication(ArrayList<CodeElement> languageCommunication) {
 		this.languageCommunication = languageCommunication;
 	}
 	public CodeElement getRaceCode() {
@@ -73,10 +73,10 @@ public class PatientDemographics {
 	public void setEthnicity(CodeElement ethnicity) {
 		this.ethnicity = ethnicity;
 	}
-	public CodeElement getGender() {
+	public String getGender() {
 		return gender;
 	}
-	public void setGender(CodeElement gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 	public CodeElement getMaritalStatus() {

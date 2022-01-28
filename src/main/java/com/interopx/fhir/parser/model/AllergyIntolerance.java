@@ -17,9 +17,9 @@ public class AllergyIntolerance {
 	private ReferenceElement patient;
 	private ReferenceElement encounter;
 	private Date onSetDateTime;
-	private String recorderId;
+	private ReferenceElement recorderId;
 	private Date lastOccurenceDateTime;
-	private CodeElement allergyReactionSubstance;
+	private ArrayList<CodeElement> allergyReactionSubstance;
 	private ArrayList<CodeElement> allergyReactionManifestation;
 	private Date allergyReactionOnsetDateTime;
 	private String allergyNotes;
@@ -91,10 +91,10 @@ public class AllergyIntolerance {
 	public void setOnSetDateTime(Date onSetDateTime) {
 		this.onSetDateTime = onSetDateTime;
 	}
-	public String getRecorderId() {
+	public ReferenceElement getRecorderId() {
 		return recorderId;
 	}
-	public void setRecorderId(String recorderId) {
+	public void setRecorderId(ReferenceElement recorderId) {
 		this.recorderId = recorderId;
 	}
 	public Date getLastOccurenceDateTime() {
@@ -103,10 +103,10 @@ public class AllergyIntolerance {
 	public void setLastOccurenceDateTime(Date lastOccurenceDateTime) {
 		this.lastOccurenceDateTime = lastOccurenceDateTime;
 	}
-	public CodeElement getAllergyReactionSubstance() {
+	public ArrayList<CodeElement> getAllergyReactionSubstance() {
 		return allergyReactionSubstance;
 	}
-	public void setAllergyReactionSubstance(CodeElement allergyReactionSubstance) {
+	public void setAllergyReactionSubstance(ArrayList<CodeElement> allergyReactionSubstance) {
 		this.allergyReactionSubstance = allergyReactionSubstance;
 	}
 	public ArrayList<CodeElement> getAllergyReactionManifestation() {
