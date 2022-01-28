@@ -74,6 +74,9 @@ public class ASBQueueService {
 
 	@Value("${sample.input}")
 	private String sampleInput;
+	
+	@Value("${sample.output}")
+	private String sampleOutput;
 
 	public String loadFile() throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(sampleInput));
@@ -191,7 +194,7 @@ public class ASBQueueService {
 			try {
 				String json = mapper.writeValueAsString(patientObj);
 				logger.info("CCDARefModelData:::::" + json);
-				parserUtil.saveDataToFile(json, "D:\\InteropXWorkSpace-ecw\\Sample-Ouput.json");
+				parserUtil.saveDataToFile(json, sampleOutput);
 			} catch (JsonProcessingException e) {
 				logger.error("Error in Converting Object to String");
 			}
