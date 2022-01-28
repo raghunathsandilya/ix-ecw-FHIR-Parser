@@ -3,7 +3,7 @@ package com.interopx.fhir.parser.model;
 import java.util.ArrayList;
 
 /**
- * This is the Patient Resource.
+ * This is the Patient Resource POJO.
  * 
  * @author nbashyam
  *
