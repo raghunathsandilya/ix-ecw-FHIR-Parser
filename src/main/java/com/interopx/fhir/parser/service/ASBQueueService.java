@@ -37,11 +37,15 @@ import com.ecw.utils.encryption.Compression;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.interopx.fhir.parser.model.AllergyIntolerance;
+import com.interopx.fhir.parser.model.Condition;
 import com.interopx.fhir.parser.model.Encounter;
+import com.interopx.fhir.parser.model.MedicationRequest;
 import com.interopx.fhir.parser.model.Patient;
 import com.interopx.fhir.parser.model.PatientDemographics;
 import com.interopx.fhir.parser.processing.AllergyIntoleranceProcessor;
+import com.interopx.fhir.parser.processing.ConditionProcessor;
 import com.interopx.fhir.parser.processing.EncounterProcessor;
+import com.interopx.fhir.parser.processing.MedicationRequestProcessor;
 import com.interopx.fhir.parser.processing.PatientDemographicsProcessor;
 import com.interopx.fhir.parser.util.AES256;
 import com.interopx.fhir.parser.util.ParserUtil;
@@ -70,11 +74,20 @@ public class ASBQueueService {
 	AllergyIntoleranceProcessor allergyProcessor;
 
 	@Autowired
+	EncounterProcessor encounterProcessor;
+	
+	@Autowired
+	ConditionProcessor conditionProcessor;
+	
+	@Autowired
+	MedicationRequestProcessor medicationRequestProcessor;
+
+	@Autowired
 	ParserUtil parserUtil;
 
 	@Value("${sample.input}")
 	private String sampleInput;
-	
+
 	@Value("${sample.output}")
 	private String sampleOutput;
 
@@ -161,6 +174,9 @@ public class ASBQueueService {
 			Patient patientObj = new Patient();
 			PatientDemographics patientdemographics = null;
 			ArrayList<AllergyIntolerance> allergies = new ArrayList<AllergyIntolerance>();
+			ArrayList<Encounter> encounters = new ArrayList<Encounter>();
+			ArrayList<Condition> conditions = new ArrayList<Condition>();
+			ArrayList<MedicationRequest> medicationRequests = new ArrayList<MedicationRequest>();
 			if (!bundle.getEntry().isEmpty()) {
 				for (BundleEntryComponent entryComp : bundle.getEntry()) {
 					if (entryComp.hasResource()) {
@@ -173,12 +189,16 @@ public class ASBQueueService {
 							allergies.add(allergy);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.Encounter.toString())) {
+							Encounter encounter = encounterProcessor.retrieveEncounter(resource);
+							encounters.add(encounter);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.MedicationRequest.toString())) {
-
+							MedicationRequest medicationRequest = medicationRequestProcessor.retrieveMedicationRequest(resource);
+							medicationRequests.add(medicationRequest);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.Condition.toString())) {
-
+							Condition  condition = conditionProcessor.retrieveCondition(resource);
+							conditions.add(condition);
 						}
 					}
 				}
@@ -190,10 +210,19 @@ public class ASBQueueService {
 			if (allergies != null) {
 				patientObj.setAllergyIntolerance(allergies);
 			}
+			if (encounters != null) {
+				patientObj.setEncounters(encounters);
+			}
+			if(conditions!=null) {
+				patientObj.setCondition(conditions);
+			}
+			if(medicationRequests != null) {
+				patientObj.setMedicationRequests(medicationRequests);
+			}
 			ObjectMapper mapper = new ObjectMapper();
 			try {
 				String json = mapper.writeValueAsString(patientObj);
-				logger.info("CCDARefModelData:::::" + json);
+				logger.info("PatientModelData:::::" + json);
 				parserUtil.saveDataToFile(json, sampleOutput);
 			} catch (JsonProcessingException e) {
 				logger.error("Error in Converting Object to String");

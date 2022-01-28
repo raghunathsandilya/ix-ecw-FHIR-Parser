@@ -8,11 +8,11 @@ public class Encounter {
 	private ArrayList<IdentifierElement> identifiers;
 	private String status;
 	private CodeElement encounterClass;
-	private CodeElement encounterType;
+	private ArrayList<CodeElement> encounterType;
 	private ReferenceElement patient;
 	private PeriodElement encounterPeriod;
 	private ArrayList<CodeElement> reasonCode;
-	private ArrayList<Location> serviceDeliveryLocations;
+	private ArrayList<ReferenceElement> serviceDeliveryLocations;
 	
 	public String getEncounterId() {
 		return encounterId;
@@ -38,10 +38,10 @@ public class Encounter {
 	public void setEncounterClass(CodeElement encounterClass) {
 		this.encounterClass = encounterClass;
 	}
-	public CodeElement getEncounterType() {
+	public ArrayList<CodeElement> getEncounterType() {
 		return encounterType;
 	}
-	public void setEncounterType(CodeElement encounterType) {
+	public void setEncounterType(ArrayList<CodeElement> encounterType) {
 		this.encounterType = encounterType;
 	}
 	public ReferenceElement getPatient() {
@@ -62,10 +62,10 @@ public class Encounter {
 	public void setReasonCode(ArrayList<CodeElement> reasonCode) {
 		this.reasonCode = reasonCode;
 	}
-	public ArrayList<Location> getServiceDeliveryLocations() {
+	public ArrayList<ReferenceElement> getServiceDeliveryLocations() {
 		return serviceDeliveryLocations;
 	}
-	public void setServiceDeliveryLocations(ArrayList<Location> serviceDeliveryLocations) {
+	public void setServiceDeliveryLocations(ArrayList<ReferenceElement> serviceDeliveryLocations) {
 		this.serviceDeliveryLocations = serviceDeliveryLocations;
 	}
 

@@ -105,9 +105,7 @@ public class AllergyIntoleranceProcessor {
 		}
 		
 		if(allergyIntolerance.hasNote()) {
-			for(Annotation allergyNote: allergyIntolerance.getNote()) {
-				allergyDetails.setAllergyNotes(allergyDetails.getAllergyNotes()+","+allergyNote.getText());
-			}
+			allergyDetails.setAllergyNotes(allergyIntolerance.getNote().get(0).getText());
 		}
 		
 		return allergyDetails;

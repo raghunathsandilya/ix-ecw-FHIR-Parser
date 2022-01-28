@@ -18,11 +18,8 @@ public class Condition {
 	private Date onsetDateTime;
 	private Date abatementDateTime;
 	private Date recordedDate;
-	private String recorderId;
-	private CodeElement conditionStageSummary;
-	private ArrayList<ReferenceElement> conditionStageAssessment;
-	private CodeElement conditionStageType;
-	private CodeElement conditionEvidenceCode;
+	private ReferenceElement recorderId;
+	private ArrayList<CodeElement> conditionEvidenceCode;
 	private ArrayList<ReferenceElement> conditionEvidenceDetails;
 	private String conditionNotes;
 	
@@ -104,34 +101,16 @@ public class Condition {
 	public void setRecordedDate(Date recordedDate) {
 		this.recordedDate = recordedDate;
 	}
-	public String getRecorderId() {
+	public ReferenceElement getRecorderId() {
 		return recorderId;
 	}
-	public void setRecorderId(String recorderId) {
+	public void setRecorderId(ReferenceElement recorderId) {
 		this.recorderId = recorderId;
 	}
-	public CodeElement getConditionStageSummary() {
-		return conditionStageSummary;
-	}
-	public void setConditionStageSummary(CodeElement conditionStageSummary) {
-		this.conditionStageSummary = conditionStageSummary;
-	}
-	public ArrayList<ReferenceElement> getConditionStageAssessment() {
-		return conditionStageAssessment;
-	}
-	public void setConditionStageAssessment(ArrayList<ReferenceElement> conditionStageAssessment) {
-		this.conditionStageAssessment = conditionStageAssessment;
-	}
-	public CodeElement getConditionStageType() {
-		return conditionStageType;
-	}
-	public void setConditionStageType(CodeElement conditionStageType) {
-		this.conditionStageType = conditionStageType;
-	}
-	public CodeElement getConditionEvidenceCode() {
+	public ArrayList<CodeElement> getConditionEvidenceCode() {
 		return conditionEvidenceCode;
 	}
-	public void setConditionEvidenceCode(CodeElement conditionEvidenceCode) {
+	public void setConditionEvidenceCode(ArrayList<CodeElement> conditionEvidenceCode) {
 		this.conditionEvidenceCode = conditionEvidenceCode;
 	}
 	public ArrayList<ReferenceElement> getConditionEvidenceDetails() {
