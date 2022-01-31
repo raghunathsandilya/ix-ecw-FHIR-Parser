@@ -68,13 +68,15 @@ public class ParserUtil {
 					identifierElement.setValue(identifier.getValue());
 				}
 				if(identifier.hasType()) {
-					identifierElement.setIdentifierType(readListOfCodeElements(identifier.getType()));
+					identifierElement.setIdentifierType(readCodeElements(identifier.getType()));
 				}
 				identifierElements.add(identifierElement);
 			}
 		}
 		return identifierElements;
 	}
+	
+	
 	
 	public static ArrayList<CodeElement> readListOfCodeElements(CodeableConcept codeableConcept){
 		ArrayList<CodeElement> codeElements = new ArrayList<CodeElement>();
@@ -162,10 +164,10 @@ public class ParserUtil {
 				addressObj.setCountry(address.getCountry());
 			}
 			if(address.hasUse()) {
-				addressObj.setPostalAddressUse(address.getUse().name());
+	//			addressObj.setPostalAddressUse(address.getUse().name());
 			}
 			if(address.hasPeriod()) {
-				addressObj.setPeriodOfStay(readPeriod(address.getPeriod()));
+	//			addressObj.setPeriodOfStay(readPeriod(address.getPeriod()));
 			}
 			addressesList.add(addressObj);
 		}

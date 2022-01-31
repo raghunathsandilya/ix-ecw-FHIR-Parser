@@ -156,6 +156,4 @@ public class PatientDemographics {
 		this.telecoms = telecoms;
 	}
 	
-	
-
 }
