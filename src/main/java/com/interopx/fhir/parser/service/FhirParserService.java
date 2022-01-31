@@ -108,14 +108,6 @@ public class FhirParserService {
 			patientObj.setEcwPatientId("1");
 			patientObj.setEcwPracticeId("1");
 			patientObj.setRequestId("1");
-			ObjectMapper mapper = new ObjectMapper();
-			try {
-				String json = mapper.writeValueAsString(patientObj);
-				logger.info("Patient Model Data:::::" + json);
-				// parserUtil.saveDataToFile(json, sampleOutput);
-			} catch (JsonProcessingException e) {
-				logger.error("Error in Converting Object to String");
-			}
 
 		} catch (Exception e) {
 			logger.info("Error in Processing the FHIR Object");
