@@ -3,21 +3,61 @@ package com.interopx.fhir.parser.model;
 import java.util.ArrayList;
 import java.util.Date;
 
-
+/**
+ * This POJO contains all the demographic details of a patient such as DateOfBirth, Address, Names etc.
+ *  
+ * @author nbashyam
+ *
+ */
 public class PatientDemographics {
 	
+	/** The unique id for the patient in the system from where data was retrieved */
 	private String patientId;
+	
+	/** The Full URL containing the server from where the data was retrieved and id of the resoucer */
+	private String resourceUrl;
+	
+	/** The list of names being used by the patient, it is an array to capture previous names */
 	private ArrayList<NameElement> patientNames;
+	
+	/** The list of identifiers associated with the patient in the system from where the data was retrieved */
 	private ArrayList<IdentifierElement> identifiers;
+	
+	/** The Date of Birth for the Patient */
 	private Date dob;
+	
+	/** The Date of Death for a deceased patient */
 	private Date dateOfDeath;
+	
+	/** The list of addresses associated with the Patient */
 	private ArrayList<Address> addresses;
+	
+	/** The list of languages that the Patient uses for communication */
 	private ArrayList<CodeElement> languageCommunication;
-	private CodeElement raceCode;
+	
+	/** The Race Category for the Patient */
+	private CodeElement raceCategory;
+	
+	/** The list of detailed race codes associated with the Patient within the raceCategory */
+	private ArrayList<CodeElement> detailedRaceCodes;
+	
+	/** The Ethnicity Category of the Patient */
 	private CodeElement ethnicity;
-	private String gender;
+	
+	/** The Administrative Gender for the Patient */
+	private CodeElement gender;
+	
+	/** The Birth Sex for the Patient */
+	private CodeElement birthSex;
+	
+	/** The Marital Status for the Patient */
 	private CodeElement maritalStatus;
+	
+	/** The Religious Affiliation of the Patient */
 	private CodeElement religiousAffiliationCode;
+	
+	/** The list of contact information including email, telephone, fax etc */
+	private ArrayList<Telecom> telecoms;
 	
 	public String getPatientId() {
 		return patientId;
@@ -61,11 +101,11 @@ public class PatientDemographics {
 	public void setLanguageCommunication(ArrayList<CodeElement> languageCommunication) {
 		this.languageCommunication = languageCommunication;
 	}
-	public CodeElement getRaceCode() {
-		return raceCode;
+	public CodeElement getRaceCategory() {
+		return raceCategory;
 	}
-	public void setRaceCode(CodeElement raceCode) {
-		this.raceCode = raceCode;
+	public void setRaceCategory(CodeElement raceCode) {
+		this.raceCategory = raceCode;
 	}
 	public CodeElement getEthnicity() {
 		return ethnicity;
@@ -73,10 +113,10 @@ public class PatientDemographics {
 	public void setEthnicity(CodeElement ethnicity) {
 		this.ethnicity = ethnicity;
 	}
-	public String getGender() {
+	public CodeElement getGender() {
 		return gender;
 	}
-	public void setGender(String gender) {
+	public void setGender(CodeElement gender) {
 		this.gender = gender;
 	}
 	public CodeElement getMaritalStatus() {
@@ -91,5 +131,31 @@ public class PatientDemographics {
 	public void setReligiousAffiliationCode(CodeElement religiousAffiliationCode) {
 		this.religiousAffiliationCode = religiousAffiliationCode;
 	}
+	public String getResourceUrl() {
+		return resourceUrl;
+	}
+	public void setResourceUrl(String resourceUrl) {
+		this.resourceUrl = resourceUrl;
+	}
+	public ArrayList<CodeElement> getDetailedRaceCodes() {
+		return detailedRaceCodes;
+	}
+	public void setDetailedRaceCodes(ArrayList<CodeElement> detailedRaceCodes) {
+		this.detailedRaceCodes = detailedRaceCodes;
+	}
+	public CodeElement getBirthSex() {
+		return birthSex;
+	}
+	public void setBirthSex(CodeElement birthSex) {
+		this.birthSex = birthSex;
+	}
+	public ArrayList<Telecom> getTelecoms() {
+		return telecoms;
+	}
+	public void setTelecoms(ArrayList<Telecom> telecoms) {
+		this.telecoms = telecoms;
+	}
+	
+	
 
 }

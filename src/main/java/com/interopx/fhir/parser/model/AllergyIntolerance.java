@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The List of Allergies and Intolerances associated with the Patient
+ * 
+ * @author nbashyam
+ *
+ */
 public class AllergyIntolerance {
 	
 	private String allergyId;
@@ -23,6 +29,7 @@ public class AllergyIntolerance {
 	private ArrayList<CodeElement> allergyReactionManifestation;
 	private Date allergyReactionOnsetDateTime;
 	private String allergyNotes;
+	private List<Practitioner>   practitioners;
 	
 	
 	public String getAllergyId() {
@@ -60,12 +67,6 @@ public class AllergyIntolerance {
 	}
 	public void setAllergyCategory(List<String> allergyCategory) {
 		this.allergyCategory = allergyCategory;
-	}
-	public String getAllergyCriticality() {
-		return allergyCriticality;
-	}
-	public void setAllergyCriticality(String allergyCriticality) {
-		this.allergyCriticality = allergyCriticality;
 	}
 	public CodeElement getAllergyCode() {
 		return allergyCode;
@@ -126,6 +127,18 @@ public class AllergyIntolerance {
 	}
 	public void setAllergyNotes(String allergyNotes) {
 		this.allergyNotes = allergyNotes;
+	}
+	public String getAllergyCriticality() {
+		return allergyCriticality;
+	}
+	public void setAllergyCriticality(String allergyCriticality) {
+		this.allergyCriticality = allergyCriticality;
+	}
+	public List<Practitioner> getPractitioners() {
+		return practitioners;
+	}
+	public void setPractitioners(List<Practitioner> practitioners) {
+		this.practitioners = practitioners;
 	}
 
 }

@@ -1,7 +1,14 @@
 package com.interopx.fhir.parser.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * The encounter associated with the Patient.
+ * 
+ * @author nbashyam
+ *
+ */
 public class Encounter {
 	
 	private String encounterId;
@@ -13,6 +20,9 @@ public class Encounter {
 	private PeriodElement encounterPeriod;
 	private ArrayList<CodeElement> reasonCode;
 	private ArrayList<ReferenceElement> serviceDeliveryLocations;
+	private List<Practitioner>   practitioners;
+	private ArrayList<Organization> serviceProviders;
+	private ArrayList<Location>     locations;
 	
 	public String getEncounterId() {
 		return encounterId;

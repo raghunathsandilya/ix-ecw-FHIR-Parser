@@ -41,14 +41,14 @@ public class ParserUtil {
 				if(humanName.hasGiven()) {
 					nameElement.setFirstName(humanName.getGiven().get(0).getValue());
 					if(humanName.getGiven().size()>1) {
-						nameElement.setMiddleName(humanName.getGiven().get(1).getValue());	
+						nameElement.addMiddleName(humanName.getGiven().get(1).getValue());	
 					}
 				}
 				if(humanName.hasSuffix()) {
 					nameElement.setSuffix(humanName.getSuffix().get(0).getValue());
 				}
 				if(humanName.hasUse()) {
-					nameElement.setUseContext(humanName.getUse().name());
+			//		nameElement.setUseContext(humanName.getUse().name());
 				}
 				names.add(nameElement);
 			}

@@ -17,6 +17,12 @@ import com.interopx.fhir.parser.model.PatientDemographics;
 import com.interopx.fhir.parser.util.ParserConstants;
 import com.interopx.fhir.parser.util.ParserUtil;
 
+/**
+ * The class that will process a Patient FHIR Resource and populate the PatientDemographics POJO.
+ * 
+ * @author nbashyam
+ *
+ */
 @Service
 public class PatientDemographicsProcessor {
 
@@ -62,7 +68,7 @@ public class PatientDemographicsProcessor {
 								if(subExtension.getUrl().contentEquals(ParserConstants.OMBCATGEORY)) {
 									if (subExtension.getValue() != null && subExtension.getValue() instanceof Coding) {
 										Coding coding = (Coding) subExtension.getValue();
-										patientDemographics.setRaceCode(ParserUtil.readCodingElemenets(coding));
+										patientDemographics.setRaceCategory(ParserUtil.readCodingElemenets(coding));
 									}
 								}
 							}
@@ -85,7 +91,7 @@ public class PatientDemographicsProcessor {
 			}
 		}
 		if (patient.hasGender()) {
-			patientDemographics.setGender(patient.getGender().name());
+	//		patientDemographics.setGender(patient.getGender().name());
 		}
 
 		if (patient.hasMaritalStatus()) {
