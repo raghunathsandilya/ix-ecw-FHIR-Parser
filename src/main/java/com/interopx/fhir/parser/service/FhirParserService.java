@@ -47,11 +47,10 @@ public class FhirParserService {
 	private static final MedicationRequestProcessor medicationRequestProcessor = new MedicationRequestProcessor(); 
 
 	public Patient processFhirObject(String fhirObject) {
-		logger.info("Received Message:::::{}", fhirObject);
+		logger.info("Reading FHIR Object:::::{}", fhirObject);
 		Patient patientObj = new Patient();
 		try {
 			Bundle bundle = (Bundle) fhirParser.parseResource(fhirObject);
-			logger.info("Parsing the Bundle Done:::::");
 			PatientDemographics patientdemographics = null;
 			ArrayList<AllergyIntolerance> allergies = new ArrayList<AllergyIntolerance>();
 			ArrayList<Encounter> encounters = new ArrayList<Encounter>();
@@ -112,7 +111,7 @@ public class FhirParserService {
 			ObjectMapper mapper = new ObjectMapper();
 			try {
 				String json = mapper.writeValueAsString(patientObj);
-				logger.info("PatientModelData:::::" + json);
+				logger.info("Patient Model Data:::::" + json);
 				// parserUtil.saveDataToFile(json, sampleOutput);
 			} catch (JsonProcessingException e) {
 				logger.error("Error in Converting Object to String");
