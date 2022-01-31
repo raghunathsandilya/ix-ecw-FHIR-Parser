@@ -51,7 +51,7 @@ public class Encounter {
 	/** The list of practitioners participating in the encounter */
 	private HashMap<ParticipantType,Practitioner>   practitioners;
 	
-	/** The organization respsonsible for the encounter */
+	/** The organization responsible for the encounter */
 	private ArrayList<Organization> serviceProviders;
 	
 	/** The location where the encounter was performed */

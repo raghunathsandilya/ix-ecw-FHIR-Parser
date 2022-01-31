@@ -21,7 +21,7 @@ public class IxFhirParserApplication {
 	public static void main(String[] args) {
 		FhirParserService fhirParserService = new FhirParserService();
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader("D:\\InteropXWorkSpace-ecw\\Sample-Input.json"));
+			BufferedReader reader = new BufferedReader(new FileReader("//users//nbashyam//Downloads//ecw//Sample-Input.json"));
 			StringBuilder stringBuilder = new StringBuilder();
 			String line = null;
 			String ls = System.getProperty("line.separator");
