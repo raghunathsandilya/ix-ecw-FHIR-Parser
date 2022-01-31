@@ -67,9 +67,6 @@ public class FhirParserService {
 						Resource resource = entryComp.getResource();
 						if (resource.getResourceType().name().equals(ResourceType.Patient.toString())) {
 							patientdemographics = patientDemographicsProcessor.retrievePatientDemographics(resource);
-							if(entryComp.hasFullUrl()) {
-								patientdemographics.setResourceUrl(entryComp.getFullUrl());
-							}
 						}
 						if (resource.getResourceType().name().equals(ResourceType.AllergyIntolerance.toString())) {
 							AllergyIntolerance allergy = allergyProcessor.retrieveAllergyIntolerance(resource);

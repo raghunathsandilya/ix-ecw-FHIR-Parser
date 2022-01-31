@@ -13,6 +13,7 @@ import org.hl7.fhir.r4.model.Resource;
 import org.springframework.stereotype.Service;
 
 import com.interopx.fhir.parser.model.CodeElement;
+import com.interopx.fhir.parser.model.MetaData;
 import com.interopx.fhir.parser.model.PatientDemographics;
 import com.interopx.fhir.parser.util.ParserConstants;
 import com.interopx.fhir.parser.util.ParserUtil;
@@ -34,6 +35,12 @@ public class PatientDemographicsProcessor {
 		if (patient.hasIdElement()) {
 			patientDemographics.setPatientId(patient.getIdElement().getIdPart());
 		}
+		
+		if(patient.hasMeta()) {
+			patientDemographics.setVersion(patient.getMeta().getVersionId());
+			patientDemographics.setLastModifiedTimestamp(patient.getMeta().getLastUpdated());
+		}
+		
 		if (patient.hasName()) {
 			patientDemographics.setPatientNames(ParserUtil.readNameElement(patient.getName()));
 		}
