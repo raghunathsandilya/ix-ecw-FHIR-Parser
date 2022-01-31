@@ -87,21 +87,26 @@ public class AllergyIntoleranceProcessor {
 			ArrayList<CodeElement> allergySubstances = new ArrayList<CodeElement>();
 			ArrayList<CodeElement> allergyReactionManifestations =  new ArrayList<CodeElement>();
 			for(AllergyIntoleranceReactionComponent reactionComp: allergyReactions) {
-				CodeElement allergySubstanceCodeElement = ParserUtil.readCodeElements(reactionComp.getSubstance());
-				allergySubstances.add(allergySubstanceCodeElement);
+				if(reactionComp.hasSubstance()) {
+					CodeElement allergySubstanceCodeElement = ParserUtil.readCodeElements(reactionComp.getSubstance());
+					allergySubstances.add(allergySubstanceCodeElement);	
+				}
 				if(reactionComp.hasManifestation()) {
 					for(CodeableConcept concept: reactionComp.getManifestation()) {
 						CodeElement allergyReactionManifestationsCodeElement = ParserUtil.readCodeElements(concept);
 						allergyReactionManifestations.add(allergyReactionManifestationsCodeElement);
 					}
 				}
-				
 				if(reactionComp.hasOnset()) {
 					allergyDetails.setAllergyReactionOnsetDateTime(reactionComp.getOnset());
 				}
 			}
-			allergyDetails.setAllergyReactionSubstance(allergySubstances);
-			allergyDetails.setAllergyReactionManifestation(allergyReactionManifestations);
+			if(!allergyReactions.isEmpty()) {
+				allergyDetails.setAllergyReactionSubstance(allergySubstances);	
+			}
+			if(!allergyReactionManifestations.isEmpty()) {
+				allergyDetails.setAllergyReactionManifestation(allergyReactionManifestations);	
+			}
 		}
 		
 		if(allergyIntolerance.hasNote()) {
