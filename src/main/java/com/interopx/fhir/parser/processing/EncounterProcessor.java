@@ -28,7 +28,7 @@ public class EncounterProcessor {
 		}
 		
 		if(encounterFhirObj.hasStatus()) {
-			encounterObj.setStatus(encounterFhirObj.getStatus().name());
+	//		encounterObj.setStatus(encounterFhirObj.getStatus().name());
 		}
 		
 		if(encounterFhirObj.hasClass_()) {
@@ -44,12 +44,8 @@ public class EncounterProcessor {
 			encounterObj.setEncounterType(encounterTypes);
 		}
 		
-		if(encounterFhirObj.hasSubject()) {
-			encounterObj.setPatient(ParserUtil.readReferenceElement(encounterFhirObj.getSubject()));
-		}
-		
 		if(encounterFhirObj.hasPeriod()) {
-			encounterObj.setEncounterPeriod(ParserUtil.readPeriod(encounterFhirObj.getPeriod()));
+	//		encounterObj.setEncounterPeriod(ParserUtil.readPeriod(encounterFhirObj.getPeriod()));
 		}
 		
 		if(encounterFhirObj.hasReasonCode()) {
@@ -68,7 +64,7 @@ public class EncounterProcessor {
 				referenceElements.add(ParserUtil.readReferenceElement(locationComp.getLocation()));	
 				}
 			}
-			encounterObj.setServiceDeliveryLocations(referenceElements);
+	//		encounterObj.setServiceDeliveryLocations(referenceElements);
 		}
 		return encounterObj;
 	}

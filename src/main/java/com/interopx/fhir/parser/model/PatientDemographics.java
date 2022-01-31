@@ -14,8 +14,8 @@ public class PatientDemographics {
 	/** The unique id for the patient in the system from where data was retrieved */
 	private String patientId;
 	
-	/** The Full URL containing the server from where the data was retrieved and id of the resoucer */
-	private String resourceUrl;
+	/** The Meta data such as versionId, resourceUrl, lastModifiedTimeStamp */
+	private MetaData meta;
 	
 	/** The list of names being used by the patient, it is an array to capture previous names */
 	private ArrayList<NameElement> patientNames;
@@ -131,12 +131,6 @@ public class PatientDemographics {
 	public void setReligiousAffiliationCode(CodeElement religiousAffiliationCode) {
 		this.religiousAffiliationCode = religiousAffiliationCode;
 	}
-	public String getResourceUrl() {
-		return resourceUrl;
-	}
-	public void setResourceUrl(String resourceUrl) {
-		this.resourceUrl = resourceUrl;
-	}
 	public ArrayList<CodeElement> getDetailedRaceCodes() {
 		return detailedRaceCodes;
 	}
@@ -154,6 +148,12 @@ public class PatientDemographics {
 	}
 	public void setTelecoms(ArrayList<Telecom> telecoms) {
 		this.telecoms = telecoms;
+	}
+	public MetaData getMeta() {
+		return meta;
+	}
+	public void setMeta(MetaData meta) {
+		this.meta = meta;
 	}
 	
 }

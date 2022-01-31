@@ -224,7 +224,14 @@ public class Immunization {
 		this.doseSeriesNumber = doseSeriesNumber;
 	}
 
-	
+	public MetaData getMeta() {
+		return meta;
+	}
+
+	public void setMeta(MetaData meta) {
+		this.meta = meta;
+	}
+
 
 	
 	
