@@ -1,16 +1,46 @@
 package com.interopx.fhir.parser.model;
 
+import java.sql.Date;
 
+/**
+ * The Address data to be used across different resources such as Practitioner, Patient, Organization etc.
+ * 
+ * @author nbashyam
+ *
+ */
 public class Address {
 	
+	public enum PostalAddressUse { home, work, temp, old, billing } 
+	
+	/** The first street address line for the entity */
 	private String addressLine1;
+	
+	/** The second street address line for the entity */
 	private String addressLine2;
+	
+	/** The third street address line for the entity */
+	private String addressLine3;
+	
+	/** The city for the address */
 	private String city;
+	
+	/** The state for the address */
 	private String state;
+	
+	/** The zip code for the address */
 	private String postalCode;
+	
+	/** The Country code for the address */
 	private String country;
-	private String postalAddressUse;
-	private PeriodElement periodOfStay;
+	
+	/** The postal address use */
+	private PostalAddressUse postalAddressUse;
+	
+	/** The name was active from date */
+	private Date       startDate;
+	
+	/** The name was officially changed from date, and hence it is an old/previous name */
+	private Date       endDate; 
 	
 	public String getAddressLine1() {
 		return addressLine1;
@@ -48,17 +78,29 @@ public class Address {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public String getPostalAddressUse() {
+	public PostalAddressUse getPostalAddressUse() {
 		return postalAddressUse;
 	}
-	public void setPostalAddressUse(String postalAddressUse) {
+	public void setPostalAddressUse(PostalAddressUse postalAddressUse) {
 		this.postalAddressUse = postalAddressUse;
 	}
-	public PeriodElement getPeriodOfStay() {
-		return periodOfStay;
+	public String getAddressLine3() {
+		return addressLine3;
 	}
-	public void setPeriodOfStay(PeriodElement periodOfStay) {
-		this.periodOfStay = periodOfStay;
+	public void setAddressLine3(String addressLine3) {
+		this.addressLine3 = addressLine3;
+	}
+	public Date getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 }

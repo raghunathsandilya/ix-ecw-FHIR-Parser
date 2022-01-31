@@ -19,19 +19,15 @@ public class MedicationRequestProcessor {
 		}
 		
 		if(medicationRequestFhirObj.hasStatus()) {
-			medicaiontRequestObj.setStatus(medicationRequestFhirObj.getStatus().name());
+	//		medicaiontRequestObj.setStatus(medicationRequestFhirObj.getStatus().name());
 		}
 		
 		if(medicationRequestFhirObj.hasIntent()) {
-			medicaiontRequestObj.setIntent(medicationRequestFhirObj.getIntent().name());
+	//		medicaiontRequestObj.setIntent(medicationRequestFhirObj.getIntent().name());
 		}
 		
 		if(medicationRequestFhirObj.hasMedicationCodeableConcept()) {
 			medicaiontRequestObj.setMedication(ParserUtil.readCodeElements(medicationRequestFhirObj.getMedicationCodeableConcept()));
-		}
-		
-		if(medicationRequestFhirObj.hasSubject()) {
-			medicaiontRequestObj.setPatient(ParserUtil.readReferenceElement(medicationRequestFhirObj.getSubject()));
 		}
 		
 		if(medicationRequestFhirObj.hasAuthoredOn()) {
@@ -39,7 +35,7 @@ public class MedicationRequestProcessor {
 		}
 		
 		if(medicationRequestFhirObj.hasRequester()) {
-			medicaiontRequestObj.setRequester(ParserUtil.readReferenceElement(medicationRequestFhirObj.getRequester()));
+//			medicaiontRequestObj.setRequester(ParserUtil.readReferenceElement(medicationRequestFhirObj.getRequester()));
 		}
 		
 		return medicaiontRequestObj;

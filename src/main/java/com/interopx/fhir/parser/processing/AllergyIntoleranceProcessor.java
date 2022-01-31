@@ -6,7 +6,6 @@ import java.util.List;
 import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceCategory;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceReactionComponent;
-import org.hl7.fhir.r4.model.Annotation;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Enumeration;
 import org.hl7.fhir.r4.model.Resource;
@@ -32,15 +31,15 @@ public class AllergyIntoleranceProcessor {
 		}
 		
 		if(allergyIntolerance.hasClinicalStatus()) {
-			allergyDetails.setClinicalStatus(ParserUtil.readCodeElements(allergyIntolerance.getClinicalStatus()));
+	//		allergyDetails.setClinicalStatus(ParserUtil.readCodeElements(allergyIntolerance.getClinicalStatus()));
 		}
 		
 		if(allergyIntolerance.hasVerificationStatus()) {
-			allergyDetails.setVerificationStatus(ParserUtil.readCodeElements(allergyIntolerance.getVerificationStatus()));
+	//		allergyDetails.setVerificationStatus(ParserUtil.readCodeElements(allergyIntolerance.getVerificationStatus()));
 		}
 		
 		if(allergyIntolerance.hasType()) {
-			allergyDetails.setAllergyType(allergyIntolerance.getType().name());
+	//		allergyDetails.setAllergyType(allergyIntolerance.getType().name());
 		}
 		
 		if(allergyIntolerance.hasCategory()) {
@@ -50,33 +49,26 @@ public class AllergyIntoleranceProcessor {
 				for(Enumeration<AllergyIntoleranceCategory> allergyCategoryEnum: allergyCategories) {
 					allergyCategoriesList.add(allergyCategoryEnum.asStringValue());
 				}
-				allergyDetails.setAllergyCategory(allergyCategoriesList);
+	//			allergyDetails.setAllergyCategory(allergyCategoriesList);
 			}
 		}
 		
 		if(allergyIntolerance.hasCriticality()) {
-			allergyDetails.setAllergyCriticality(allergyIntolerance.getCriticality().name());
+	//		allergyDetails.setAllergyCriticality(allergyIntolerance.getCriticality().name());
 		}
 		
 		if(allergyIntolerance.hasCode()) {
 			allergyDetails.setAllergyCode(ParserUtil.readCodeElements(allergyIntolerance.getCode()));
 		}
 		
-		if(allergyIntolerance.hasPatient()) {
-			allergyDetails.setPatient(ParserUtil.readReferenceElement(allergyIntolerance.getPatient()));
-		}
-		
 		if(allergyIntolerance.hasEncounter()) {
-			allergyDetails.setEncounter(ParserUtil.readReferenceElement(allergyIntolerance.getEncounter()));
+	//		allergyDetails.setEncounter(ParserUtil.readReferenceElement(allergyIntolerance.getEncounter()));
 		}
 		
 		if(allergyIntolerance.hasOnsetDateTimeType()) {
 			allergyDetails.setOnSetDateTime(allergyIntolerance.getOnsetDateTimeType().getValue());
 		}
 		
-		if(allergyIntolerance.hasRecorder()) {
-			allergyDetails.setRecorderId(ParserUtil.readReferenceElement(allergyIntolerance.getRecorder()));
-		}
 		
 		if(allergyIntolerance.hasLastOccurrence()) {
 			allergyDetails.setLastOccurenceDateTime(allergyIntolerance.getLastOccurrence());
@@ -98,19 +90,19 @@ public class AllergyIntoleranceProcessor {
 					}
 				}
 				if(reactionComp.hasOnset()) {
-					allergyDetails.setAllergyReactionOnsetDateTime(reactionComp.getOnset());
+	//				allergyDetails.setAllergyReactionOnsetDateTime(reactionComp.getOnset());
 				}
 			}
 			if(!allergyReactions.isEmpty()) {
-				allergyDetails.setAllergyReactionSubstance(allergySubstances);	
+				// allergyDetails.setAllergyReactionSubstance(allergySubstances);	
 			}
 			if(!allergyReactionManifestations.isEmpty()) {
-				allergyDetails.setAllergyReactionManifestation(allergyReactionManifestations);	
+				// allergyDetails.setAllergyReactionManifestation(allergyReactionManifestations);	
 			}
 		}
 		
 		if(allergyIntolerance.hasNote()) {
-			allergyDetails.setAllergyNotes(allergyIntolerance.getNote().get(0).getText());
+			allergyDetails.setNotes(allergyIntolerance.getNote().get(0).getText());
 		}
 		
 		return allergyDetails;

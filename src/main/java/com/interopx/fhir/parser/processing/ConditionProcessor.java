@@ -31,7 +31,7 @@ public class ConditionProcessor {
 		}
 		
 		if(conditionFhirObj.hasClinicalStatus()) {
-			conditionObj.setClinicalStatus(ParserUtil.readCodeElements(conditionFhirObj.getClinicalStatus()));
+	//		conditionObj.setClinicalStatus(ParserUtil.readCodeElements(conditionFhirObj.getClinicalStatus()));
 		}
 		
 		if(conditionFhirObj.hasVerificationStatus()) {
@@ -47,7 +47,7 @@ public class ConditionProcessor {
 		}
 		
 		if(conditionFhirObj.hasSeverity()) {
-			conditionObj.setSeverity(ParserUtil.readCodeElements(conditionFhirObj.getSeverity()));
+//			conditionObj.setSeverity(ParserUtil.readCodeElements(conditionFhirObj.getSeverity()));
 		}
 		
 		if(conditionFhirObj.hasCode()) {
@@ -63,11 +63,11 @@ public class ConditionProcessor {
 		}
 		
 		if(conditionFhirObj.hasSubject()) {
-			conditionObj.setPatient(ParserUtil.readReferenceElement(conditionFhirObj.getSubject()));
+//			conditionObj.setPatient(ParserUtil.readReferenceElement(conditionFhirObj.getSubject()));
 		}
 		
 		if(conditionFhirObj.hasEncounter()) {
-			conditionObj.setEncounter(ParserUtil.readReferenceElement(conditionFhirObj.getEncounter()));
+	//		conditionObj.setEncounter(ParserUtil.readReferenceElement(conditionFhirObj.getEncounter()));
 		}
 		
 		if(conditionFhirObj.hasOnsetDateTimeType()) {
@@ -83,31 +83,12 @@ public class ConditionProcessor {
 		}
 		
 		if(conditionFhirObj.hasRecorder()) {
-			conditionObj.setRecorderId(ParserUtil.readReferenceElement(conditionFhirObj.getRecorder()));
+//			conditionObj.setRecorderId(ParserUtil.readReferenceElement(conditionFhirObj.getRecorder()));
 		}
 		
-		if(conditionFhirObj.hasEvidence()) {
-			for(ConditionEvidenceComponent evidenceComp: conditionFhirObj.getEvidence()) {
-				if(evidenceComp.hasCode()) {
-					ArrayList<CodeElement> evidenceCodes = new ArrayList<CodeElement>();
-					for(CodeableConcept concept: evidenceComp.getCode()) {
-						evidenceCodes.add(ParserUtil.readCodeElements(concept));	
-					}
-					conditionObj.setConditionEvidenceCode(evidenceCodes);
-				}
-				
-				if(evidenceComp.hasDetail()) {
-					ArrayList<ReferenceElement> referenceDetails = new ArrayList<ReferenceElement>();
-					for(Reference reference: evidenceComp.getDetail()) {
-						referenceDetails.add(ParserUtil.readReferenceElement(reference));
-					}
-					conditionObj.setConditionEvidenceDetails(referenceDetails);
-				}
-			}
-		}
 		
 		if(conditionFhirObj.hasNote()) {
-			conditionObj.setConditionNotes(conditionFhirObj.getNote().get(0).getText());
+			conditionObj.setNotes(conditionFhirObj.getNote().get(0).getText());
 		}
 		
 		return conditionObj;
