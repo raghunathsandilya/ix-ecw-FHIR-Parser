@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Meta;
@@ -26,6 +27,7 @@ import com.interopx.fhir.parser.model.NameElement;
 import com.interopx.fhir.parser.model.PatientLanguage;
 import com.interopx.fhir.parser.model.PeriodElement;
 import com.interopx.fhir.parser.model.ReferenceElement;
+import com.interopx.fhir.parser.model.Telecom;
 
 @Component
 public class ParserUtil {
@@ -196,6 +198,44 @@ public class ParserUtil {
 		}
 		
 		return referenceElement;
+	}
+	
+	public static String getCodeFromCodeableConcept(CodeableConcept concept) {
+		String codeElement = new String();
+		if(concept.hasCoding()) {
+			Coding coding = concept.getCodingFirstRep();
+			if(coding.hasCode()) {
+				codeElement=coding.getCode();
+			}
+		}
+		return codeElement;
+	}
+	
+	public static ArrayList<Telecom> readTelecomElement(List<ContactPoint> telecomList){
+		ArrayList<Telecom> telecoms = new ArrayList<Telecom>();
+		for(ContactPoint cp: telecomList) {
+			Telecom telecom = new Telecom();
+			if(cp.hasSystem()) {
+				telecom.setType(FhirUtil.getTelecomType(cp.getSystem()));
+			}
+			if(cp.hasUse()) {
+				telecom.setUse(FhirUtil.getTelecomUse(cp.getUse()));
+			}
+			if(cp.hasValue()) {
+				telecom.setValue(cp.getValue());
+			}
+			if(cp.hasPeriod()) {
+				if(cp.getPeriod().hasStart()) {
+					telecom.setStartDate(cp.getPeriod().getStart());
+				}
+				if(cp.getPeriod().hasEnd()) {
+					telecom.setEndDate(cp.getPeriod().getEnd());
+				}
+			}
+			telecoms.add(telecom);
+		}
+		
+		return telecoms;
 	}
 	
 	public static void saveDataToFile(String data, String fileName) {

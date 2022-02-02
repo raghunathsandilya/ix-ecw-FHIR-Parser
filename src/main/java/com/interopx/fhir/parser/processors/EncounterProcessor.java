@@ -1,4 +1,4 @@
-package com.interopx.fhir.parser.processing;
+package com.interopx.fhir.parser.processors;
 
 import java.util.ArrayList;
 
@@ -12,6 +12,13 @@ import com.interopx.fhir.parser.model.Encounter;
 import com.interopx.fhir.parser.model.ReferenceElement;
 import com.interopx.fhir.parser.util.ParserUtil;
 
+/**
+ * 
+ * This class will process the Encounter FHIR Object and Converts it to Encounter POJO
+ * 
+ * @author nbashaym
+ *
+ */
 @Service
 public class EncounterProcessor {
 

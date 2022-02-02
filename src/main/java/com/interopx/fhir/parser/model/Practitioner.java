@@ -9,7 +9,7 @@ import java.util.Date;
  * @author nbashyam
  *
  */
-public class Practitioner {
+public class Practitioner extends MetaData{
 
 	/** The id of the Practitioner in the system from where the data is retrieved */
 	private String practitionerId;
@@ -21,13 +21,13 @@ public class Practitioner {
 	private ArrayList<IdentifierElement> identifiers;
 	
 	/** The name of the practitioner */
-	private NameElement name;
+	private ArrayList<NameElement> name;
 	
 	/** The contact Info for the Practitioner */
 	private ArrayList<Telecom>     telecomInfo;
 	
 	/** The Practitioner's address */
-	private Address     address;
+	private ArrayList<Address>     address;
 	
 	/** The dob of the Practitioner */
 	private Date        birthDate; 
@@ -74,19 +74,19 @@ public class Practitioner {
 		this.identifiers = identifiers;
 	}
 
-	public NameElement getName() {
+	public ArrayList<NameElement> getName() {
 		return name;
 	}
 
-	public void setName(NameElement name) {
+	public void setName(ArrayList<NameElement> name) {
 		this.name = name;
 	}
 
-	public Address getAddress() {
+	public ArrayList<Address> getAddress() {
 		return address;
 	}
 
-	public void setAddress(Address address) {
+	public void setAddress(ArrayList<Address> address) {
 		this.address = address;
 	}
 

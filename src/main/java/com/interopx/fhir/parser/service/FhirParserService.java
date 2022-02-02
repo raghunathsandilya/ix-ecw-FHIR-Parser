@@ -1,5 +1,8 @@
 package com.interopx.fhir.parser.service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.hl7.fhir.r4.model.Bundle;
@@ -18,11 +21,13 @@ import com.interopx.fhir.parser.model.Encounter;
 import com.interopx.fhir.parser.model.MedicationRequest;
 import com.interopx.fhir.parser.model.Patient;
 import com.interopx.fhir.parser.model.PatientDemographics;
-import com.interopx.fhir.parser.processing.AllergyIntoleranceProcessor;
-import com.interopx.fhir.parser.processing.ConditionProcessor;
-import com.interopx.fhir.parser.processing.EncounterProcessor;
-import com.interopx.fhir.parser.processing.MedicationRequestProcessor;
-import com.interopx.fhir.parser.processing.PatientDemographicsProcessor;
+import com.interopx.fhir.parser.model.Practitioner;
+import com.interopx.fhir.parser.processors.AllergyIntoleranceProcessor;
+import com.interopx.fhir.parser.processors.ConditionProcessor;
+import com.interopx.fhir.parser.processors.EncounterProcessor;
+import com.interopx.fhir.parser.processors.MedicationRequestProcessor;
+import com.interopx.fhir.parser.processors.PatientDemographicsProcessor;
+import com.interopx.fhir.parser.processors.PractitionerProcessor;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
@@ -33,42 +38,44 @@ public class FhirParserService {
 	private static final Logger logger = LoggerFactory.getLogger(FhirParserService.class);
 
 	private static final FhirContext fhirContext = FhirContext.forR4();
-	
-	private static final IParser fhirParser = fhirContext.newJsonParser().setPrettyPrint(true); 
 
-	private static final PatientDemographicsProcessor patientDemographicsProcessor = new PatientDemographicsProcessor();
+	private static final IParser fhirParser = fhirContext.newJsonParser().setPrettyPrint(true);
 
-	private static final AllergyIntoleranceProcessor allergyProcessor = new AllergyIntoleranceProcessor();
+	private static PatientDemographicsProcessor patientDemographicsProcessor = new PatientDemographicsProcessor();
 
-	private static final EncounterProcessor encounterProcessor = new EncounterProcessor();
-	
-	private static final ConditionProcessor conditionProcessor = new ConditionProcessor();
-	
-	private static final MedicationRequestProcessor medicationRequestProcessor = new MedicationRequestProcessor(); 
+	private static AllergyIntoleranceProcessor allergyProcessor = new AllergyIntoleranceProcessor();
+
+	private static EncounterProcessor encounterProcessor = new EncounterProcessor();
+
+	private static ConditionProcessor conditionProcessor = new ConditionProcessor();
+
+	private static MedicationRequestProcessor medicationRequestProcessor = new MedicationRequestProcessor();
 
 	public Patient processFhirObject(String fhirObject) {
 		logger.info("Reading FHIR Object:::::{}", fhirObject);
 		Patient patientObj = new Patient();
 		try {
 			Bundle bundle = (Bundle) fhirParser.parseResource(fhirObject);
-			PatientDemographics patientdemographics = null;
+			ArrayList<PatientDemographics> patientDemographicsList = new ArrayList<PatientDemographics>();
 			ArrayList<AllergyIntolerance> allergies = new ArrayList<AllergyIntolerance>();
 			ArrayList<Encounter> encounters = new ArrayList<Encounter>();
 			ArrayList<Condition> conditions = new ArrayList<Condition>();
 			ArrayList<MedicationRequest> medicationRequests = new ArrayList<MedicationRequest>();
-			ArrayList<String> serverUrls =  new ArrayList<String>();
+			ArrayList<Practitioner> practitioners = new ArrayList<Practitioner>();
+			ArrayList<String> serverUrls = new ArrayList<String>();
 			if (!bundle.getEntry().isEmpty()) {
 				for (BundleEntryComponent entryComp : bundle.getEntry()) {
-					if(entryComp.hasFullUrl()) {
+					if (entryComp.hasFullUrl()) {
 						serverUrls.add(entryComp.getFullUrl());
 					}
 					if (entryComp.hasResource()) {
 						Resource resource = entryComp.getResource();
 						if (resource.getResourceType().name().equals(ResourceType.Patient.toString())) {
-							patientdemographics = patientDemographicsProcessor.retrievePatientDemographics(resource);
+							PatientDemographics patientdemographics = patientDemographicsProcessor.retrievePatientDemographics(resource);
+							patientDemographicsList.add(patientdemographics);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.AllergyIntolerance.toString())) {
-							AllergyIntolerance allergy = allergyProcessor.retrieveAllergyIntolerance(resource);
+							AllergyIntolerance allergy = allergyProcessor.retrieveAllergyIntolerance(resource,bundle);
 							allergies.add(allergy);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.Encounter.toString())) {
@@ -76,19 +83,20 @@ public class FhirParserService {
 							encounters.add(encounter);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.MedicationRequest.toString())) {
-							MedicationRequest medicationRequest = medicationRequestProcessor.retrieveMedicationRequest(resource);
+							MedicationRequest medicationRequest = medicationRequestProcessor
+									.retrieveMedicationRequest(resource);
 							medicationRequests.add(medicationRequest);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.Condition.toString())) {
-							Condition  condition = conditionProcessor.retrieveCondition(resource);
+							Condition condition = conditionProcessor.retrieveCondition(resource);
 							conditions.add(condition);
 						}
 					}
 				}
 			}
 
-			if (patientdemographics != null) {
-				patientObj.setPatientDemographics(patientdemographics);
+			if (patientDemographicsList != null) {
+				patientObj.setPatientDemographics(patientDemographicsList);
 			}
 			if (allergies != null) {
 				patientObj.setAllergyIntolerance(allergies);
@@ -96,13 +104,13 @@ public class FhirParserService {
 			if (encounters != null) {
 				patientObj.setEncounters(encounters);
 			}
-			if(conditions!=null) {
+			if (conditions != null) {
 				patientObj.setCondition(conditions);
 			}
-			if(medicationRequests != null) {
+			if (medicationRequests != null) {
 				patientObj.setMedicationRequests(medicationRequests);
 			}
-			if(!serverUrls.isEmpty()) {
+			if (!serverUrls.isEmpty()) {
 				patientObj.setServerUrls(serverUrls);
 			}
 			patientObj.setEcwPatientId("1");

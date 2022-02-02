@@ -1,4 +1,4 @@
-package com.interopx.fhir.parser.processing;
+package com.interopx.fhir.parser.processors;
 
 import java.util.ArrayList;
 
@@ -14,6 +14,12 @@ import com.interopx.fhir.parser.model.Condition;
 import com.interopx.fhir.parser.model.ReferenceElement;
 import com.interopx.fhir.parser.util.ParserUtil;
 
+/**
+ * This class will process the Condition FHIR Object and Converts it to Condition POJO
+ * 
+ * @author nbashyam
+ *
+ */
 @Service
 public class ConditionProcessor {
 	

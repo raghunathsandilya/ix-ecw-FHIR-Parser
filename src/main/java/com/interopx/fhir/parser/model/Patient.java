@@ -26,7 +26,7 @@ public class Patient {
 	/** The Patient Demographics information, Each instance of PatientDemographics is data received from a different data source.
 	 * If there is only one data source from where data is retrieved, then there would be only entry of PatientDemographics. 
 	 */
-	private PatientDemographics patientDemographics;
+	private ArrayList<PatientDemographics> patientDemographics;
 	
 	/** The List of immunizations retrieved from the data sources */
 	private ArrayList<Immunization> immunizations;
@@ -52,11 +52,11 @@ public class Patient {
 	/** The List of Organizations who provided the services */
 	private ArrayList<Organization>  organizations;
 
-	public PatientDemographics getPatientDemographics() {
+	public ArrayList<PatientDemographics> getPatientDemographics() {
 		return patientDemographics;
 	}
 
-	public void setPatientDemographics(PatientDemographics patientDemographics) {
+	public void setPatientDemographics(ArrayList<PatientDemographics> patientDemographics) {
 		this.patientDemographics = patientDemographics;
 	}
 

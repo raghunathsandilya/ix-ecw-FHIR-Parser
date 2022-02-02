@@ -1,4 +1,4 @@
-package com.interopx.fhir.parser.processing;
+package com.interopx.fhir.parser.processors;
 
 import org.hl7.fhir.r4.model.Resource;
 import org.springframework.stereotype.Service;
@@ -6,6 +6,13 @@ import org.springframework.stereotype.Service;
 import com.interopx.fhir.parser.model.MedicationRequest;
 import com.interopx.fhir.parser.util.ParserUtil;
 
+
+/**
+ * This class will process the MedicationRequest FHIR Object and Converts it to MedicationRequest POJO
+ * 
+ * @author nbashyam
+ *
+ */
 @Service
 public class MedicationRequestProcessor {
 	
