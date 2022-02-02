@@ -71,24 +71,24 @@ public class FhirParserService {
 					if (entryComp.hasResource()) {
 						Resource resource = entryComp.getResource();
 						if (resource.getResourceType().name().equals(ResourceType.Patient.toString())) {
-							PatientDemographics patientdemographics = patientDemographicsProcessor.retrievePatientDemographics(resource);
+							PatientDemographics patientdemographics = patientDemographicsProcessor.retrievePatientDemographics(resource,entryComp.getFullUrl());
 							patientDemographicsList.add(patientdemographics);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.AllergyIntolerance.toString())) {
-							AllergyIntolerance allergy = allergyProcessor.retrieveAllergyIntolerance(resource,bundle);
+							AllergyIntolerance allergy = allergyProcessor.retrieveAllergyIntolerance(resource,bundle,entryComp.getFullUrl());
 							allergies.add(allergy);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.Encounter.toString())) {
-							Encounter encounter = encounterProcessor.retrieveEncounter(resource);
+							Encounter encounter = encounterProcessor.retrieveEncounter(resource,bundle,entryComp.getFullUrl());
 							encounters.add(encounter);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.MedicationRequest.toString())) {
 							MedicationRequest medicationRequest = medicationRequestProcessor
-									.retrieveMedicationRequest(resource);
+									.retrieveMedicationRequest(resource,bundle,entryComp.getFullUrl());
 							medicationRequests.add(medicationRequest);
 						}
 						if (resource.getResourceType().name().equals(ResourceType.Condition.toString())) {
-							Condition condition = conditionProcessor.retrieveCondition(resource);
+							Condition condition = conditionProcessor.retrieveCondition(resource,bundle,entryComp.getFullUrl());
 							conditions.add(condition);
 						}
 					}

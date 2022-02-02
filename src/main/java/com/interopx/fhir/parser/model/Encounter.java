@@ -52,7 +52,7 @@ public class Encounter {
 	private HashMap<ParticipantType,Practitioner>   practitioners;
 	
 	/** The organization responsible for the encounter */
-	private ArrayList<Organization> serviceProviders;
+	private Organization serviceProviders;
 	
 	/** The location where the encounter was performed */
 	private ArrayList<Location>     locations;
@@ -102,10 +102,10 @@ public class Encounter {
 	public void setPractitioners(HashMap<ParticipantType, Practitioner> practitioners) {
 		this.practitioners = practitioners;
 	}
-	public ArrayList<Organization> getServiceProviders() {
+	public Organization getServiceProviders() {
 		return serviceProviders;
 	}
-	public void setServiceProviders(ArrayList<Organization> serviceProviders) {
+	public void setServiceProviders(Organization serviceProviders) {
 		this.serviceProviders = serviceProviders;
 	}
 	public ArrayList<Location> getLocations() {

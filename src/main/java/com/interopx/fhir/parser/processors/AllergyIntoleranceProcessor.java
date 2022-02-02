@@ -6,15 +6,17 @@ import java.util.List;
 import org.hl7.fhir.r4.model.AllergyIntolerance;
 import org.hl7.fhir.r4.model.AllergyIntolerance.AllergyIntoleranceReactionComponent;
 import org.hl7.fhir.r4.model.Bundle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.interopx.fhir.parser.model.AllergyReaction;
 import com.interopx.fhir.parser.model.CodeElement;
+import com.interopx.fhir.parser.model.MetaData;
 import com.interopx.fhir.parser.service.FhirParserService;
 import com.interopx.fhir.parser.util.FhirUtil;
 import com.interopx.fhir.parser.util.ParserUtil;
@@ -37,14 +39,29 @@ public class AllergyIntoleranceProcessor {
 	 * @param allergy
 	 * @return
 	 */
-	public com.interopx.fhir.parser.model.AllergyIntolerance retrieveAllergyIntolerance(Resource allergy,
-			Bundle bundle) {
+	public com.interopx.fhir.parser.model.AllergyIntolerance retrieveAllergyIntolerance(Resource allergy, Bundle bundle,
+			String fullURL) {
 		AllergyIntolerance allergyIntolerance = (AllergyIntolerance) allergy;
 
 		com.interopx.fhir.parser.model.AllergyIntolerance allergyDetails = new com.interopx.fhir.parser.model.AllergyIntolerance();
 
 		if (allergyIntolerance.hasIdElement()) {
 			allergyDetails.setAllergyId(allergyIntolerance.getIdElement().getIdPart());
+		}
+
+		if (allergyIntolerance.hasMeta()) {
+			MetaData metaInfo = new MetaData() {
+			};
+			if (allergyIntolerance.getMeta().hasVersionId()) {
+				metaInfo.setVersion(allergyIntolerance.getMeta().getVersionId());
+			}
+			if (allergyIntolerance.getMeta().hasLastUpdated()) {
+				metaInfo.setLastModifiedTimestamp(allergyIntolerance.getMeta().getLastUpdated());
+			}
+			if(!fullURL.isEmpty()) {
+				metaInfo.setUrl(fullURL);	
+			}
+			allergyDetails.setMeta(metaInfo);
 		}
 
 		if (allergyIntolerance.hasIdentifier()) {
@@ -64,16 +81,17 @@ public class AllergyIntoleranceProcessor {
 		if (allergyIntolerance.hasCategory()) {
 			if (!allergyIntolerance.getCategory().isEmpty()) {
 				allergyDetails.setAllergyCategory(
-						FhirUtil.getAllergyCategory(allergyIntolerance.getCategory().get(0).getValue()));
+						FhirUtil.getAllergyCategory(allergyIntolerance.getCategory().get(0).getValue().toCode()));
 			}
 		}
 
 		if (allergyIntolerance.hasCriticality()) {
-			allergyDetails.setAllergyCriticality(FhirUtil.getAllergyCriticality(allergyIntolerance.getCriticality()));
+			allergyDetails.setAllergyCriticality(
+					FhirUtil.getAllergyCriticality(allergyIntolerance.getCriticality().toCode()));
 		}
 
 		if (allergyIntolerance.hasCode()) {
-			allergyDetails.setAllergyCode(ParserUtil.readCodeElements(allergyIntolerance.getCode()));
+			allergyDetails.setAllergyCode(ParserUtil.readCodeableConceptElements(allergyIntolerance.getCode()));
 		}
 
 		if (allergyIntolerance.hasEncounter()) {
@@ -87,6 +105,10 @@ public class AllergyIntoleranceProcessor {
 		if (allergyIntolerance.hasLastOccurrence()) {
 			allergyDetails.setLastOccurenceDateTime(allergyIntolerance.getLastOccurrence());
 		}
+		
+		if(allergyIntolerance.hasRecordedDate()) {
+			allergyDetails.setRecordedDateTime(allergyIntolerance.getRecordedDate());
+		}
 
 		if (allergyIntolerance.hasReaction()) {
 			List<AllergyIntoleranceReactionComponent> allergyReactions = allergyIntolerance.getReaction();
@@ -94,12 +116,14 @@ public class AllergyIntoleranceProcessor {
 			for (AllergyIntoleranceReactionComponent reactionComp : allergyReactions) {
 				AllergyReaction allergyReaction = new AllergyReaction();
 				if (reactionComp.hasSubstance()) {
-					CodeElement allergySubstanceCodeElement = ParserUtil.readCodeElements(reactionComp.getSubstance());
+					CodeElement allergySubstanceCodeElement = ParserUtil
+							.readCodeableConceptElements(reactionComp.getSubstance());
 					allergyReaction.setSubstance(allergySubstanceCodeElement);
 				}
 				if (reactionComp.hasManifestation()) {
 					for (CodeableConcept concept : reactionComp.getManifestation()) {
-						CodeElement allergyReactionManifestationsCodeElement = ParserUtil.readCodeElements(concept);
+						CodeElement allergyReactionManifestationsCodeElement = ParserUtil
+								.readCodeableConceptElements(concept);
 						allergyReaction.setReaction(allergyReactionManifestationsCodeElement);
 					}
 				}
@@ -108,7 +132,8 @@ public class AllergyIntoleranceProcessor {
 				}
 
 				if (reactionComp.hasSeverity()) {
-					allergyReaction.setSeverity(FhirUtil.getAllergyReactionSeverity(reactionComp.getSeverity()));
+					allergyReaction
+							.setSeverity(FhirUtil.getAllergyReactionSeverity(reactionComp.getSeverity().toCode()));
 				}
 				allergyReactionsList.add(allergyReaction);
 			}
@@ -122,18 +147,24 @@ public class AllergyIntoleranceProcessor {
 		}
 
 		if (allergyIntolerance.hasRecorder()) {
-			Resource resource = FhirUtil.getResourceById(bundle, ResourceType.Practitioner,
+			BundleEntryComponent entryComp = FhirUtil.getResourceById(bundle, ResourceType.Practitioner,
 					allergyIntolerance.getRecorder().getReferenceElement().getIdPart());
-			if(resource != null) {
-				allergyDetails.setRecorder(practitionerProcessor.retrievePractitioner(resource, bundle));	
+			if (entryComp != null) {
+				if (entryComp.hasResource()) {
+					allergyDetails.setRecorder(practitionerProcessor.retrievePractitioner(entryComp.getResource(),
+							bundle, entryComp.getFullUrl()));
+				}
 			}
 		}
-		
+
 		if (allergyIntolerance.hasAsserter()) {
-			Resource resource = FhirUtil.getResourceById(bundle, ResourceType.Practitioner,
+			BundleEntryComponent entryComp = FhirUtil.getResourceById(bundle, ResourceType.Practitioner,
 					allergyIntolerance.getAsserter().getReferenceElement().getIdPart());
-			if(resource != null) {
-				allergyDetails.setAsserter(practitionerProcessor.retrievePractitioner(resource, bundle));	
+			if (entryComp != null) {
+				if (entryComp.hasResource()) {
+					allergyDetails.setAsserter(practitionerProcessor.retrievePractitioner(entryComp.getResource(),
+							bundle, entryComp.getFullUrl()));
+				}
 			}
 		}
 

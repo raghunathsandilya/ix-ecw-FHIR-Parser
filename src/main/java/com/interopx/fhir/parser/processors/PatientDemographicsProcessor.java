@@ -10,6 +10,7 @@ import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
 import org.hl7.fhir.r4.model.Resource;
+import org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler;
 import org.springframework.stereotype.Service;
 
 import com.interopx.fhir.parser.model.CodeElement;
@@ -27,7 +28,7 @@ import com.interopx.fhir.parser.util.ParserUtil;
 @Service
 public class PatientDemographicsProcessor {
 
-	public PatientDemographics retrievePatientDemographics(Resource patientResource) {
+	public PatientDemographics retrievePatientDemographics(Resource patientResource,String fullURL) {
 
 		Patient patient = (Patient) patientResource;
 		PatientDemographics patientDemographics = new PatientDemographics();
@@ -37,8 +38,17 @@ public class PatientDemographicsProcessor {
 		}
 		
 		if(patient.hasMeta()) {
-			patientDemographics.setVersion(patient.getMeta().getVersionId());
-			patientDemographics.setLastModifiedTimestamp(patient.getMeta().getLastUpdated());
+			MetaData metaInfo = new MetaData() {};
+			if(patient.getMeta().hasVersionId()) {
+				metaInfo.setVersion(patient.getMeta().getVersionId());	
+			}
+			if(patient.getMeta().hasLastUpdated()) {
+				metaInfo.setLastModifiedTimestamp(patient.getMeta().getLastUpdated());
+			}
+			if(!fullURL.isEmpty()) {
+				metaInfo.setUrl(fullURL);	
+			}
+			patientDemographics.setMeta(metaInfo);
 		}
 		
 		if (patient.hasName()) {
@@ -75,7 +85,7 @@ public class PatientDemographicsProcessor {
 								if(subExtension.getUrl().contentEquals(ParserConstants.OMBCATGEORY)) {
 									if (subExtension.getValue() != null && subExtension.getValue() instanceof Coding) {
 										Coding coding = (Coding) subExtension.getValue();
-										patientDemographics.setRaceCategory(ParserUtil.readCodingElemenets(coding));
+										patientDemographics.setRaceCategory(ParserUtil.readCodingElements(coding));
 									}
 								}
 							}
@@ -88,7 +98,7 @@ public class PatientDemographicsProcessor {
 								if(subExtension.getUrl().contentEquals(ParserConstants.OMBCATGEORY)) {
 									if (subExtension.getValue() != null && subExtension.getValue() instanceof Coding) {
 										Coding coding = (Coding) subExtension.getValue();
-										patientDemographics.setEthnicity(ParserUtil.readCodingElemenets(coding));
+										patientDemographics.setEthnicity(ParserUtil.readCodingElements(coding));
 									}
 								}
 							}
@@ -98,11 +108,15 @@ public class PatientDemographicsProcessor {
 			}
 		}
 		if (patient.hasGender()) {
-	//		patientDemographics.setGender(patient.getGender().name());
+			patientDemographics.setGender(ParserUtil.getCodeElementFromAdministrativeGender(patient.getGender()));
 		}
 
 		if (patient.hasMaritalStatus()) {
-			patientDemographics.setMaritalStatus(ParserUtil.readCodeElements(patient.getMaritalStatus()));
+			patientDemographics.setMaritalStatus(ParserUtil.readCodeableConceptElements(patient.getMaritalStatus()));
+		}
+		
+		if(patient.hasTelecom()) {
+			patientDemographics.setTelecoms(ParserUtil.readTelecomElement(patient.getTelecom()));
 		}
 
 		return patientDemographics;

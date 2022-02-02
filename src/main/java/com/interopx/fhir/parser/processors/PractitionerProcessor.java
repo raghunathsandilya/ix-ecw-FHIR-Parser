@@ -12,6 +12,7 @@ import org.hl7.fhir.r4.model.CodeableConcept;
 import org.springframework.stereotype.Service;
 
 import com.interopx.fhir.parser.model.CodeElement;
+import com.interopx.fhir.parser.model.MetaData;
 import com.interopx.fhir.parser.model.Practitioner;
 import com.interopx.fhir.parser.util.ParserUtil;
 
@@ -25,7 +26,7 @@ import com.interopx.fhir.parser.util.ParserUtil;
 @Service
 public class PractitionerProcessor {
 
-	public Practitioner retrievePractitioner(Resource practitioner, Bundle bundle) {
+	public Practitioner retrievePractitioner(Resource practitioner, Bundle bundle,String fullURL) {
 		org.hl7.fhir.r4.model.Practitioner practitionerFhirObj = (org.hl7.fhir.r4.model.Practitioner) practitioner;
 		PractitionerRole practitionerRoleFhirObj = getPractitionerRoleByPractitioner(bundle,
 				practitionerFhirObj.getIdElement().getIdPart());
@@ -36,13 +37,18 @@ public class PractitionerProcessor {
 			practitionerObj.setPractitionerId(practitionerFhirObj.getIdElement().getIdPart());
 		}
 
-		if (practitionerFhirObj.hasMeta()) {
-			if (practitionerFhirObj.getMeta().hasVersionId()) {
-				practitionerObj.setVersion(practitionerFhirObj.getMeta().getVersionId());
+		if(practitionerFhirObj.hasMeta()) {
+			MetaData metaInfo = new MetaData() {};
+			if(practitionerFhirObj.getMeta().hasVersionId()) {
+				metaInfo.setVersion(practitionerFhirObj.getMeta().getVersionId());	
 			}
-			if (practitionerFhirObj.getMeta().hasLastUpdated()) {
-				practitionerObj.setLastModifiedTimestamp(practitionerFhirObj.getMeta().getLastUpdated());
+			if(practitionerFhirObj.getMeta().hasLastUpdated()) {
+				metaInfo.setLastModifiedTimestamp(practitionerFhirObj.getMeta().getLastUpdated());
 			}
+			if(!fullURL.isEmpty()) {
+				metaInfo.setUrl(fullURL);	
+			}
+			practitionerObj.setMeta(metaInfo);
 		}
 
 		if (practitionerFhirObj.hasIdentifier()) {

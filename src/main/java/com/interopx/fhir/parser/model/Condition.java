@@ -38,10 +38,10 @@ public class Condition {
 	private ConditionClinicalStatus status;
 	
 	/** The Condition status relevant to the chart */
-	private CodeElement verificationStatus;
+	private ConditionVerificationStatus verificationStatus;
 	
 	/** The category of the condition */
-	private ArrayList<CodeElement> conditionCategory;
+	private ArrayList<ConditionCategory> conditionCategory;
 	
 	/** Severity of the condition */
 	private ConditionSeverity severity;
@@ -65,7 +65,7 @@ public class Condition {
 	private Date recordedDate;
 	
 	/** The practitioner recording the condition */
-	private Practitioner recorderId;
+	private Practitioner recorder;
 	
 	/** The Notes associated with the condition */
 	private String notes;
@@ -102,19 +102,19 @@ public class Condition {
 		this.status = status;
 	}
 
-	public CodeElement getVerificationStatus() {
+	public ConditionVerificationStatus getVerificationStatus() {
 		return verificationStatus;
 	}
 
-	public void setVerificationStatus(CodeElement verificationStatus) {
+	public void setVerificationStatus(ConditionVerificationStatus verificationStatus) {
 		this.verificationStatus = verificationStatus;
 	}
 
-	public ArrayList<CodeElement> getConditionCategory() {
+	public ArrayList<ConditionCategory> getConditionCategory() {
 		return conditionCategory;
 	}
 
-	public void setConditionCategory(ArrayList<CodeElement> conditionCategory) {
+	public void setConditionCategory(ArrayList<ConditionCategory> conditionCategory) {
 		this.conditionCategory = conditionCategory;
 	}
 
@@ -174,12 +174,12 @@ public class Condition {
 		this.recordedDate = recordedDate;
 	}
 
-	public Practitioner getRecorderId() {
-		return recorderId;
+	public Practitioner getRecorder() {
+		return recorder;
 	}
 
-	public void setRecorderId(Practitioner recorderId) {
-		this.recorderId = recorderId;
+	public void setRecorder(Practitioner recorder) {
+		this.recorder = recorder;
 	}
 
 	public String getNotes() {
