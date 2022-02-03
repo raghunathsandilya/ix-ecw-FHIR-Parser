@@ -60,7 +60,7 @@ public class EncounterProcessor {
 			if (encounterFhirObj.getMeta().hasLastUpdated()) {
 				metaInfo.setLastModifiedTimestamp(encounterFhirObj.getMeta().getLastUpdated());
 			}
-			if (!fullURL.isEmpty()) {
+			if (fullURL!=null) {
 				metaInfo.setUrl(fullURL);
 			}
 			encounterObj.setMeta(metaInfo);

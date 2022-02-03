@@ -55,7 +55,7 @@ public class ConditionProcessor {
 			if (conditionFhirObj.getMeta().hasLastUpdated()) {
 				metaInfo.setLastModifiedTimestamp(conditionFhirObj.getMeta().getLastUpdated());
 			}
-			if (!fullURL.isEmpty()) {
+			if (fullURL!=null) {
 				metaInfo.setUrl(fullURL);
 			}
 			conditionObj.setMeta(metaInfo);

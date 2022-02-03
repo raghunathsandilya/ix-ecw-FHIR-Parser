@@ -9,7 +9,7 @@ import java.util.Date;
  * @author nbashyam
  *
  */
-public class PatientDemographics extends MetaData{
+public class PatientDemographics {
 	
 	/** The unique id for the patient in the system from where data was retrieved */
 	private String patientId;

@@ -38,12 +38,14 @@ public class FhirUtil {
 
 	public static BundleEntryComponent getResourceById(Bundle bundle, ResourceType resourceName, String resourceId) {
 		BundleEntryComponent resource = null;
-		for (BundleEntryComponent bundleEntryComp : bundle.getEntry()) {
-			if (bundleEntryComp.hasResource()) {
-				Resource resourceObj = bundleEntryComp.getResource();
-				if (resourceObj.getResourceType().name().equals(resourceName.name())
-						&& resourceObj.getIdElement().getIdPart().equals(resourceId)) {
-					resource = bundleEntryComp;
+		if(bundle != null) {
+			for (BundleEntryComponent bundleEntryComp : bundle.getEntry()) {
+				if (bundleEntryComp.hasResource()) {
+					Resource resourceObj = bundleEntryComp.getResource();
+					if (resourceObj.getResourceType().name().equals(resourceName.name())
+							&& resourceObj.getIdElement().getIdPart().equals(resourceId)) {
+						resource = bundleEntryComp;
+					}
 				}
 			}
 		}

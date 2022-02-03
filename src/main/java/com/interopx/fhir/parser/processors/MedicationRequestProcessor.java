@@ -43,7 +43,7 @@ public class MedicationRequestProcessor {
 			if (medicationRequestFhirObj.getMeta().hasLastUpdated()) {
 				metaInfo.setLastModifiedTimestamp(medicationRequestFhirObj.getMeta().getLastUpdated());
 			}
-			if (!fullURL.isEmpty()) {
+			if (fullURL!=null) {
 				metaInfo.setUrl(fullURL);
 			}
 			medicaiontRequestObj.setMeta(metaInfo);

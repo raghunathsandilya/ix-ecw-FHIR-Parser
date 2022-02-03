@@ -36,9 +36,13 @@ public class LocationProcessor {
 			if(locationFhirObj.getMeta().hasLastUpdated()) {
 				metaInfo.setLastModifiedTimestamp(locationFhirObj.getMeta().getLastUpdated());
 			}
-			if(!fullUrl.isEmpty()) {
+			if(fullUrl!=null) {
 				metaInfo.setUrl(fullUrl);	
 			}
+			locationObj.setMeta(metaInfo);
+		} else if(fullUrl!=null) {
+			MetaData metaInfo = new MetaData() {};
+			metaInfo.setUrl(fullUrl);
 			locationObj.setMeta(metaInfo);
 		}
 		

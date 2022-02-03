@@ -9,7 +9,7 @@ import java.util.Date;
  * @author nbashyam
  *
  */
-public class Practitioner extends MetaData{
+public class Practitioner {
 
 	/** The id of the Practitioner in the system from where the data is retrieved */
 	private String practitionerId;

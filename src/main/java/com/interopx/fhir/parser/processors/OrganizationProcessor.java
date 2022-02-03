@@ -32,9 +32,13 @@ public class OrganizationProcessor {
 			if(organizationFhirObj.getMeta().hasLastUpdated()) {
 				metaInfo.setLastModifiedTimestamp(organizationFhirObj.getMeta().getLastUpdated());
 			}
-			if(!fullUrl.isEmpty()) {
+			if(fullUrl!=null) {
 				metaInfo.setUrl(fullUrl);	
 			}
+			organizationData.setMeta(metaInfo);
+		} else if(fullUrl!=null) {
+			MetaData metaInfo = new MetaData() {};
+			metaInfo.setUrl(fullUrl);
 			organizationData.setMeta(metaInfo);
 		}
 		

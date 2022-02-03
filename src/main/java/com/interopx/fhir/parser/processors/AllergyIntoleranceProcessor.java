@@ -58,7 +58,7 @@ public class AllergyIntoleranceProcessor {
 			if (allergyIntolerance.getMeta().hasLastUpdated()) {
 				metaInfo.setLastModifiedTimestamp(allergyIntolerance.getMeta().getLastUpdated());
 			}
-			if(!fullURL.isEmpty()) {
+			if(fullURL!=null) {
 				metaInfo.setUrl(fullURL);	
 			}
 			allergyDetails.setMeta(metaInfo);

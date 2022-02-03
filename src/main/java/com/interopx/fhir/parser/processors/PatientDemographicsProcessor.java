@@ -45,7 +45,7 @@ public class PatientDemographicsProcessor {
 			if(patient.getMeta().hasLastUpdated()) {
 				metaInfo.setLastModifiedTimestamp(patient.getMeta().getLastUpdated());
 			}
-			if(!fullURL.isEmpty()) {
+			if(fullURL!=null) {
 				metaInfo.setUrl(fullURL);	
 			}
 			patientDemographics.setMeta(metaInfo);

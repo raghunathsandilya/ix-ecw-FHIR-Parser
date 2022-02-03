@@ -19,6 +19,7 @@ import com.interopx.fhir.parser.model.AllergyIntolerance;
 import com.interopx.fhir.parser.model.Condition;
 import com.interopx.fhir.parser.model.Encounter;
 import com.interopx.fhir.parser.model.MedicationRequest;
+import com.interopx.fhir.parser.model.Parameters;
 import com.interopx.fhir.parser.model.Patient;
 import com.interopx.fhir.parser.model.PatientDemographics;
 import com.interopx.fhir.parser.model.Practitioner;
@@ -26,6 +27,7 @@ import com.interopx.fhir.parser.processors.AllergyIntoleranceProcessor;
 import com.interopx.fhir.parser.processors.ConditionProcessor;
 import com.interopx.fhir.parser.processors.EncounterProcessor;
 import com.interopx.fhir.parser.processors.MedicationRequestProcessor;
+import com.interopx.fhir.parser.processors.ParametersProcessor;
 import com.interopx.fhir.parser.processors.PatientDemographicsProcessor;
 import com.interopx.fhir.parser.processors.PractitionerProcessor;
 
@@ -50,6 +52,8 @@ public class FhirParserService {
 	private static ConditionProcessor conditionProcessor = new ConditionProcessor();
 
 	private static MedicationRequestProcessor medicationRequestProcessor = new MedicationRequestProcessor();
+	
+	private static ParametersProcessor parametersProcessor = new ParametersProcessor();
 
 	public Patient processFhirObject(String fhirObject) {
 		logger.info("Reading FHIR Object:::::{}", fhirObject);
@@ -65,31 +69,41 @@ public class FhirParserService {
 			ArrayList<String> serverUrls = new ArrayList<String>();
 			if (!bundle.getEntry().isEmpty()) {
 				for (BundleEntryComponent entryComp : bundle.getEntry()) {
-					if (entryComp.hasFullUrl()) {
-						serverUrls.add(entryComp.getFullUrl());
-					}
 					if (entryComp.hasResource()) {
 						Resource resource = entryComp.getResource();
 						if (resource.getResourceType().name().equals(ResourceType.Patient.toString())) {
 							PatientDemographics patientdemographics = patientDemographicsProcessor.retrievePatientDemographics(resource,entryComp.getFullUrl());
 							patientDemographicsList.add(patientdemographics);
+							serverUrls.add(entryComp.getFullUrl());
 						}
 						if (resource.getResourceType().name().equals(ResourceType.AllergyIntolerance.toString())) {
 							AllergyIntolerance allergy = allergyProcessor.retrieveAllergyIntolerance(resource,bundle,entryComp.getFullUrl());
 							allergies.add(allergy);
+							serverUrls.add(entryComp.getFullUrl());
 						}
 						if (resource.getResourceType().name().equals(ResourceType.Encounter.toString())) {
 							Encounter encounter = encounterProcessor.retrieveEncounter(resource,bundle,entryComp.getFullUrl());
 							encounters.add(encounter);
+							serverUrls.add(entryComp.getFullUrl());
 						}
 						if (resource.getResourceType().name().equals(ResourceType.MedicationRequest.toString())) {
 							MedicationRequest medicationRequest = medicationRequestProcessor
 									.retrieveMedicationRequest(resource,bundle,entryComp.getFullUrl());
 							medicationRequests.add(medicationRequest);
+							serverUrls.add(entryComp.getFullUrl());
 						}
 						if (resource.getResourceType().name().equals(ResourceType.Condition.toString())) {
 							Condition condition = conditionProcessor.retrieveCondition(resource,bundle,entryComp.getFullUrl());
 							conditions.add(condition);
+							serverUrls.add(entryComp.getFullUrl());
+						}
+						if(resource.getResourceType().name().equals(ResourceType.Parameters.toString())) {
+							Parameters parameters = parametersProcessor.retrieveParameters(resource);
+							if(parameters != null) {
+								patientObj.setEcwPatientId(parameters.getEcwPatientId());
+								patientObj.setEcwPracticeId(parameters.getEcwPracticeId());
+								patientObj.setRequestId(parameters.getRequestId());
+							}
 						}
 					}
 				}
@@ -113,9 +127,6 @@ public class FhirParserService {
 			if (!serverUrls.isEmpty()) {
 				patientObj.setServerUrls(serverUrls);
 			}
-			patientObj.setEcwPatientId("1");
-			patientObj.setEcwPracticeId("1");
-			patientObj.setRequestId("1");
 
 		} catch (Exception e) {
 			logger.info("Error in Processing the FHIR Object");

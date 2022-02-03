@@ -45,9 +45,13 @@ public class PractitionerProcessor {
 			if(practitionerFhirObj.getMeta().hasLastUpdated()) {
 				metaInfo.setLastModifiedTimestamp(practitionerFhirObj.getMeta().getLastUpdated());
 			}
-			if(!fullURL.isEmpty()) {
+			if(fullURL!=null) {
 				metaInfo.setUrl(fullURL);	
 			}
+			practitionerObj.setMeta(metaInfo);
+		} else if(fullURL!=null) {
+			MetaData metaInfo = new MetaData() {};
+			metaInfo.setUrl(fullURL);
 			practitionerObj.setMeta(metaInfo);
 		}
 
