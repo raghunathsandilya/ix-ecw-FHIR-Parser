@@ -68,6 +68,7 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<finalName>ix-fhir-parser</finalName>
 		<plugins>
 	      <!-- any other plugins -->
 	      <plugin>
